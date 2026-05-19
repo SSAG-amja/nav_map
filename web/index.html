@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Braille Sidewalk Map</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <h1>점자블록 지도</h1>
+        <label>
+          도로명
+          <input id="roadInput" list="roadOptions" placeholder="전체 또는 도로명 입력" />
+          <datalist id="roadOptions"></datalist>
+        </label>
+        <button id="applyRoad">적용</button>
+        <fieldset>
+          <legend>레이어</legend>
+          <label><input id="showBoxes" type="checkbox" /> 점자 bbox</label>
+          <label><input id="showRepresentativeSegments" type="checkbox" /> 점자 네트워크</label>
+          <label><input id="showRepresentativeSegments2" type="checkbox" /> 점자 네트워크 2</label>
+          <label><input id="showBboxNetworkSegments" type="checkbox" /> bbox 내 네트워크</label>
+          <label><input id="showRelevantWalkNetwork" type="checkbox" /> bbox 내의 네트워크</label>
+          <label><input id="showRelevantWalkNetwork2" type="checkbox" /> bbox 내의 네트워크 2</label>
+          <label><input id="showWalkNetwork" type="checkbox" checked /> 전체 도보 네트워크</label>
+          <label><input id="showCrosswalks" type="checkbox" /> 횡단보도</label>
+          <label><input id="showWalkCrosswalkNodes" type="checkbox" /> 횡단보도 노드</label>
+          <label><input id="showLonelyWalkCrosswalkNodes" type="checkbox" /> 혼자인 횡단보도 노드</label>
+          <label><input id="showAudibleSignals" type="checkbox" /> 음향신호기</label>
+          <label><input id="showSubwayElevators" type="checkbox" checked /> 지하철 엘리베이터</label>
+        </fieldset>
+        <dl>
+          <div><dt>보도 객체</dt><dd id="featureCount">-</dd></div>
+          <div><dt>점자 연결</dt><dd id="brailleCount">-</dd></div>
+        </dl>
+      </aside>
+      <main class="map-wrap">
+        <div id="map"></div>
+        <div class="legend" aria-label="지도 범례">
+          <strong>범례</strong>
+          <div><span class="legend-line braille"></span>점자 네트워크 2: 점자</div>
+          <div><span class="legend-line normal"></span>점자 네트워크 2: 일반</div>
+          <div><span class="legend-line candidate"></span>bbox 내의 네트워크 2</div>
+          <div><span class="legend-fill braille-box"></span>점자 bbox: 점자</div>
+          <div><span class="legend-fill normal-box"></span>점자 bbox: 일반</div>
+          <div><span class="legend-line crosswalk-signal"></span>횡단보도: 보행등+음향</div>
+          <div><span class="legend-line crosswalk-light"></span>횡단보도: 보행등</div>
+          <div><span class="legend-line crosswalk-audio"></span>횡단보도: 음향</div>
+          <div><span class="legend-line crosswalk-none"></span>횡단보도: 정보 없음</div>
+          <div><span class="legend-dot walk-crosswalk-node"></span>횡단보도 노드</div>
+          <div><span class="legend-dot lonely-crosswalk-node"></span>혼자인 횡단보도 노드</div>
+          <div><span class="legend-dot audible-signal"></span>음향신호기 위치</div>
+          <div><span class="legend-dot subway-elevator"></span>지하철 엘리베이터</div>
+        </div>
+      </main>
+    </div>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+# Runtime viewer does not require third-party Python packages.
+# These packages are needed only if you rebuild or inspect geospatial data.
+pandas>=2.2
+geopandas>=1.0
+openpyxl>=3.1
