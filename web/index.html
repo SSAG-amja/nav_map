@@ -22,13 +22,8 @@
         <button id="applyRoad">적용</button>
         <fieldset>
           <legend>레이어</legend>
-          <label><input id="showBoxes" type="checkbox" /> 점자 bbox</label>
-          <label><input id="showRepresentativeSegments" type="checkbox" /> 점자 네트워크</label>
-          <label><input id="showRepresentativeSegments2" type="checkbox" /> 점자 네트워크 2</label>
-          <label><input id="showBboxNetworkSegments" type="checkbox" /> bbox 내 네트워크</label>
-          <label><input id="showRelevantWalkNetwork" type="checkbox" /> bbox 내의 네트워크</label>
-          <label><input id="showRelevantWalkNetwork2" type="checkbox" /> bbox 내의 네트워크 2</label>
           <label><input id="showWalkNetwork" type="checkbox" checked /> 전체 도보 네트워크</label>
+          <label><input id="showBrailleNetwork" type="checkbox" /> 점자 네트워크</label>
           <label><input id="showCrosswalks" type="checkbox" /> 횡단보도</label>
           <label><input id="showWalkCrosswalkNodes" type="checkbox" /> 횡단보도 노드</label>
           <label><input id="showLonelyWalkCrosswalkNodes" type="checkbox" /> 혼자인 횡단보도 노드</label>
@@ -36,19 +31,16 @@
           <label><input id="showSubwayElevators" type="checkbox" checked /> 지하철 엘리베이터</label>
         </fieldset>
         <dl>
-          <div><dt>보도 객체</dt><dd id="featureCount">-</dd></div>
-          <div><dt>점자 연결</dt><dd id="brailleCount">-</dd></div>
+          <div><dt>점자 링크</dt><dd id="featureCount">-</dd></div>
+          <div><dt>점자 노드</dt><dd id="brailleCount">-</dd></div>
         </dl>
       </aside>
       <main class="map-wrap">
         <div id="map"></div>
         <div class="legend" aria-label="지도 범례">
           <strong>범례</strong>
-          <div><span class="legend-line braille"></span>점자 네트워크 2: 점자</div>
-          <div><span class="legend-line normal"></span>점자 네트워크 2: 일반</div>
-          <div><span class="legend-line candidate"></span>bbox 내의 네트워크 2</div>
-          <div><span class="legend-fill braille-box"></span>점자 bbox: 점자</div>
-          <div><span class="legend-fill normal-box"></span>점자 bbox: 일반</div>
+          <div><span class="legend-line braille"></span>점자 네트워크: 점자</div>
+          <div><span class="legend-line normal"></span>점자 네트워크: 일반</div>
           <div><span class="legend-line crosswalk-signal"></span>횡단보도: 보행등+음향</div>
           <div><span class="legend-line crosswalk-light"></span>횡단보도: 보행등</div>
           <div><span class="legend-line crosswalk-audio"></span>횡단보도: 음향</div>

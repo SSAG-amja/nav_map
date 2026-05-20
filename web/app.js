@@ -13,25 +13,16 @@ L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
 }).addTo(map);
 map.fitBounds(seoulBounds);
 
-let boxData;
-let bboxNetworkSegmentData;
-let representativeSegmentData;
-let representativeSegment2Data;
+let brailleNetworkLinkData;
 let walkNetworkData;
-let relevantWalkNetworkData;
-let relevantWalkNetwork2Data;
 let crosswalkData;
 let walkCrosswalkNodeData;
 let lonelyWalkCrosswalkNodeData;
 let audibleSignalData;
 let subwayElevatorData;
-let boxLayer;
-let bboxNetworkSegmentLayer;
-let representativeSegmentLayer;
-let representativeSegment2Layer;
+
+let brailleNetworkLayer;
 let walkNetworkLayer;
-let relevantWalkNetworkLayer;
-let relevantWalkNetwork2Layer;
 let crosswalkLayer;
 let walkCrosswalkNodeLayer;
 let lonelyWalkCrosswalkNodeLayer;
@@ -43,13 +34,8 @@ const roadInput = document.querySelector("#roadInput");
 const roadOptions = document.querySelector("#roadOptions");
 const featureCount = document.querySelector("#featureCount");
 const brailleCount = document.querySelector("#brailleCount");
-const showBoxes = document.querySelector("#showBoxes");
-const showRepresentativeSegments = document.querySelector("#showRepresentativeSegments");
-const showRepresentativeSegments2 = document.querySelector("#showRepresentativeSegments2");
-const showBboxNetworkSegments = document.querySelector("#showBboxNetworkSegments");
+const showBrailleNetwork = document.querySelector("#showBrailleNetwork");
 const showWalkNetwork = document.querySelector("#showWalkNetwork");
-const showRelevantWalkNetwork = document.querySelector("#showRelevantWalkNetwork");
-const showRelevantWalkNetwork2 = document.querySelector("#showRelevantWalkNetwork2");
 const showCrosswalks = document.querySelector("#showCrosswalks");
 const showWalkCrosswalkNodes = document.querySelector("#showWalkCrosswalkNodes");
 const showLonelyWalkCrosswalkNodes = document.querySelector(
@@ -62,18 +48,6 @@ function roadName(feature) {
   return feature.properties["보도노선명"] || feature.properties.RN_NM || "미상";
 }
 
-function popupHtml(feature) {
-  const p = feature.properties;
-  return `
-    <strong>${roadName(feature)}</strong><br>
-    방향: ${p["보도노선방향"] || "-"}<br>
-    구간: ${p.SCT_DES || "-"}<br>
-    점자 연결: ${p.has_braille ? "예" : "아니오"}<br>
-    블록: ${p.SWB_CODE_NAME || "-"}<br>
-    색상: ${p.CLR_CODE_NAME || "-"}
-  `;
-}
-
 function filteredFeatures(data, selectedRoad) {
   if (!selectedRoad || selectedRoad === "전체") return data.features;
   return data.features.filter((feature) => roadName(feature) === selectedRoad);
@@ -81,6 +55,21 @@ function filteredFeatures(data, selectedRoad) {
 
 function isYes(value) {
   return value === "Y" || value === "유" || value === "있음" || value === "1";
+}
+
+function brailleNetworkPopupHtml(feature) {
+  const p = feature.properties;
+  return `
+    <strong>${roadName(feature)}</strong><br>
+    점자 링크 ID: ${p.braille_link_id || "-"}<br>
+    시작 점자 노드: ${p.from_braille_node_id || "-"}<br>
+    종료 점자 노드: ${p.to_braille_node_id || "-"}<br>
+    방향: ${p["보도노선방향"] || "-"}<br>
+    구간: ${p.SCT_DES || "-"}<br>
+    점자 연결: ${p.has_braille ? "예" : "아니오"}<br>
+    블록: ${p.SWB_CODE_NAME || "-"}<br>
+    색상: ${p.CLR_CODE_NAME || "-"}
+  `;
 }
 
 function crosswalkStyle(feature) {
@@ -155,68 +144,26 @@ function subwayElevatorPopupHtml(feature) {
 
 function renderRoad() {
   const selectedRoad = roadInput.value.trim();
-  const boxes = filteredFeatures(boxData, selectedRoad);
+  const brailleLinks = filteredFeatures(brailleNetworkLinkData, selectedRoad);
 
-  if (boxLayer) map.removeLayer(boxLayer);
-  if (bboxNetworkSegmentLayer) map.removeLayer(bboxNetworkSegmentLayer);
-  if (representativeSegmentLayer) map.removeLayer(representativeSegmentLayer);
-  if (representativeSegment2Layer) map.removeLayer(representativeSegment2Layer);
+  if (brailleNetworkLayer) map.removeLayer(brailleNetworkLayer);
   if (walkNetworkLayer) map.removeLayer(walkNetworkLayer);
-  if (relevantWalkNetworkLayer) map.removeLayer(relevantWalkNetworkLayer);
-  if (relevantWalkNetwork2Layer) map.removeLayer(relevantWalkNetwork2Layer);
   if (crosswalkLayer) map.removeLayer(crosswalkLayer);
   if (walkCrosswalkNodeLayer) map.removeLayer(walkCrosswalkNodeLayer);
   if (lonelyWalkCrosswalkNodeLayer) map.removeLayer(lonelyWalkCrosswalkNodeLayer);
   if (audibleSignalLayer) map.removeLayer(audibleSignalLayer);
   if (subwayElevatorLayer) map.removeLayer(subwayElevatorLayer);
 
-  boxLayer = L.geoJSON(boxes, {
+  brailleNetworkLayer = L.geoJSON(brailleLinks, {
     style: (feature) => ({
-      color: feature.properties.has_braille ? "#facc15" : "#9ca3af",
-      fillColor: feature.properties.has_braille ? "#facc15" : "#9ca3af",
-      fillOpacity: feature.properties.has_braille ? 0.5 : 0.28,
-      weight: 1,
+      color: feature.properties.has_braille ? "#facc15" : "#111827",
+      weight: feature.properties.has_braille ? 4 : 3,
+      opacity: 0.92,
     }),
-    onEachFeature: (feature, layer) => layer.bindPopup(popupHtml(feature)),
+    pane: "brailleNetworkPane",
+    onEachFeature: (feature, layer) =>
+      layer.bindPopup(brailleNetworkPopupHtml(feature)),
   });
-
-  bboxNetworkSegmentLayer = L.geoJSON(
-    filteredFeatures(bboxNetworkSegmentData, selectedRoad),
-    {
-      style: (feature) => ({
-        color: feature.properties.has_braille ? "#eab308" : "#475569",
-        weight: feature.properties.has_braille ? 3 : 2.5,
-        opacity: 0.88,
-      }),
-      onEachFeature: (feature, layer) => layer.bindPopup(popupHtml(feature)),
-    },
-  );
-
-  representativeSegmentLayer = L.geoJSON(
-    filteredFeatures(representativeSegmentData, selectedRoad),
-    {
-      style: (feature) => ({
-        color: feature.properties.has_braille ? "#dc2626" : "#1d4ed8",
-        weight: feature.properties.has_braille ? 4 : 3,
-        opacity: 0.9,
-      }),
-      pane: "representativePane",
-      onEachFeature: (feature, layer) => layer.bindPopup(popupHtml(feature)),
-    },
-  );
-
-  representativeSegment2Layer = L.geoJSON(
-    filteredFeatures(representativeSegment2Data, selectedRoad),
-    {
-      style: (feature) => ({
-        color: feature.properties.has_braille ? "#facc15" : "#111827",
-        weight: feature.properties.has_braille ? 4 : 3,
-        opacity: 0.92,
-      }),
-      pane: "representativePane",
-      onEachFeature: (feature, layer) => layer.bindPopup(popupHtml(feature)),
-    },
-  );
 
   walkNetworkLayer = L.geoJSON(walkNetworkData, {
     style: {
@@ -225,24 +172,6 @@ function renderRoad() {
       opacity: 0.55,
     },
     pane: "walkNetworkPane",
-  });
-
-  relevantWalkNetworkLayer = L.geoJSON(relevantWalkNetworkData, {
-    style: {
-      color: "#0891b2",
-      weight: 1.25,
-      opacity: 0.42,
-    },
-    pane: "relevantWalkNetworkPane",
-  });
-
-  relevantWalkNetwork2Layer = L.geoJSON(relevantWalkNetwork2Data, {
-    style: {
-      color: "#0f766e",
-      weight: 1.25,
-      opacity: 0.44,
-    },
-    pane: "relevantWalkNetworkPane",
   });
 
   crosswalkLayer = L.geoJSON(crosswalkData, {
@@ -311,85 +240,60 @@ function renderRoad() {
       layer.bindPopup(subwayElevatorPopupHtml(feature)),
   });
 
-  if (showBoxes.checked) boxLayer.addTo(map);
-  if (showRepresentativeSegments.checked) representativeSegmentLayer.addTo(map);
-  if (showRepresentativeSegments2.checked) representativeSegment2Layer.addTo(map);
-  if (showBboxNetworkSegments.checked) bboxNetworkSegmentLayer.addTo(map);
-  if (showRelevantWalkNetwork.checked) relevantWalkNetworkLayer.addTo(map);
-  if (showRelevantWalkNetwork2.checked) relevantWalkNetwork2Layer.addTo(map);
   if (showWalkNetwork.checked) walkNetworkLayer.addTo(map);
+  if (showBrailleNetwork.checked) brailleNetworkLayer.addTo(map);
   if (showCrosswalks.checked) crosswalkLayer.addTo(map);
   if (showWalkCrosswalkNodes.checked) walkCrosswalkNodeLayer.addTo(map);
   if (showLonelyWalkCrosswalkNodes.checked) lonelyWalkCrosswalkNodeLayer.addTo(map);
   if (showAudibleSignals.checked) audibleSignalLayer.addTo(map);
   if (showSubwayElevators.checked) subwayElevatorLayer.addTo(map);
 
-  featureCount.textContent = boxes.length.toLocaleString();
-  brailleCount.textContent = boxes
-    .filter((feature) => feature.properties.has_braille)
-    .length.toLocaleString();
+  featureCount.textContent = brailleLinks.length.toLocaleString();
+  const nodeIds = new Set();
+  brailleNetworkLinkData.features.forEach((feature) => {
+    const p = feature.properties;
+    if (p.from_braille_node_id) nodeIds.add(p.from_braille_node_id);
+    if (p.to_braille_node_id) nodeIds.add(p.to_braille_node_id);
+  });
+  brailleCount.textContent = nodeIds.size.toLocaleString();
 
-  if (boxes.length > 0) {
-    const bounds = showBoxes.checked
-      ? boxLayer.getBounds()
-      : representativeSegmentLayer.getBounds();
-    map.fitBounds(selectedRoad ? bounds : seoulBounds, { padding: [24, 24] });
+  if (selectedRoad && brailleLinks.length > 0) {
+    map.fitBounds(brailleNetworkLayer.getBounds(), { padding: [24, 24] });
+  } else if (!selectedRoad || selectedRoad === "전체") {
+    map.fitBounds(seoulBounds, { padding: [24, 24] });
   }
 }
 
 async function init() {
   map.createPane("walkNetworkPane");
   map.getPane("walkNetworkPane").style.zIndex = 350;
-  map.createPane("relevantWalkNetworkPane");
-  map.getPane("relevantWalkNetworkPane").style.zIndex = 360;
   map.createPane("crosswalkPane");
   map.getPane("crosswalkPane").style.zIndex = 410;
+  map.createPane("brailleNetworkPane");
+  map.getPane("brailleNetworkPane").style.zIndex = 430;
   map.createPane("crosswalkNodePane");
   map.getPane("crosswalkNodePane").style.zIndex = 435;
   map.createPane("lonelyCrosswalkNodePane");
   map.getPane("lonelyCrosswalkNodePane").style.zIndex = 445;
-  map.createPane("representativePane");
-  map.getPane("representativePane").style.zIndex = 430;
   map.createPane("signalPane");
   map.getPane("signalPane").style.zIndex = 440;
   map.createPane("subwayElevatorPane");
   map.getPane("subwayElevatorPane").style.zIndex = 450;
-  map.createPane("overlayPane");
-  map.getPane("overlayPane").style.zIndex = 400;
 
   const [
     roads,
-    boxes,
-    representativeSegments,
-    representativeSegments2,
-    bboxNetworkSegments,
+    brailleLinks,
     walkNetwork,
-    relevantWalkNetwork,
-    relevantWalkNetwork2,
     crosswalks,
     walkCrosswalkNodes,
     lonelyWalkCrosswalkNodes,
     audibleSignals,
     subwayElevators,
     seoulBoundary,
-  ] =
-    await Promise.all([
+  ] = await Promise.all([
     fetch("./data/roads.json").then((res) => res.json()),
-    fetch("./data/sidewalk_boxes.geojson").then((res) => res.json()),
-    fetch("./data/sidewalk_representative_network_segments.geojson").then((res) =>
-      res.json(),
-    ),
-    fetch("./data/sidewalk_representative_network_segments_v2.geojson").then((res) =>
-      res.json(),
-    ),
-    fetch("./data/sidewalk_bbox_network_segments.geojson").then((res) =>
-      res.json(),
-    ),
+    fetch("./data/braille_network_links.geojson").then((res) => res.json()),
     fetch("./data/walk_network.geojson").then((res) => res.json()),
-    fetch("./data/walk_network_clean_candidates.geojson").then((res) => res.json()),
-    fetch("./data/walk_network_clean_candidates_v2.geojson").then((res) =>
-      res.json(),
-    ),
     fetch("./data/crosswalk_links_enriched.geojson").then((res) => res.json()),
     fetch("./data/walk_crosswalk_nodes.geojson").then((res) => res.json()),
     fetch("./data/walk_crosswalk_lonely_nodes.geojson").then((res) => res.json()),
@@ -404,13 +308,8 @@ async function init() {
     roadOptions.append(option);
   });
 
-  boxData = boxes;
-  representativeSegmentData = representativeSegments;
-  representativeSegment2Data = representativeSegments2;
-  bboxNetworkSegmentData = bboxNetworkSegments;
+  brailleNetworkLinkData = brailleLinks;
   walkNetworkData = walkNetwork;
-  relevantWalkNetworkData = relevantWalkNetwork;
-  relevantWalkNetwork2Data = relevantWalkNetwork2;
   crosswalkData = crosswalks;
   walkCrosswalkNodeData = walkCrosswalkNodes;
   lonelyWalkCrosswalkNodeData = lonelyWalkCrosswalkNodes;
@@ -433,13 +332,8 @@ document.querySelector("#applyRoad").addEventListener("click", renderRoad);
 roadInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") renderRoad();
 });
-showBoxes.addEventListener("change", renderRoad);
-showRepresentativeSegments.addEventListener("change", renderRoad);
-showRepresentativeSegments2.addEventListener("change", renderRoad);
-showBboxNetworkSegments.addEventListener("change", renderRoad);
+showBrailleNetwork.addEventListener("change", renderRoad);
 showWalkNetwork.addEventListener("change", renderRoad);
-showRelevantWalkNetwork.addEventListener("change", renderRoad);
-showRelevantWalkNetwork2.addEventListener("change", renderRoad);
 showCrosswalks.addEventListener("change", renderRoad);
 showWalkCrosswalkNodes.addEventListener("change", renderRoad);
 showLonelyWalkCrosswalkNodes.addEventListener("change", renderRoad);

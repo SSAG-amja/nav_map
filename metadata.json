@@ -1,186 +1,127 @@
 {
   "name": "seoul_accessible_navigation_map",
-  "created_at": "2026-05-19T22:49:20",
+  "created_at": "2026-05-20T14:28:58",
   "crs": "EPSG:4326",
   "data_files": [
     {
       "name": "walk_nodes.geojson",
       "compressed_name": "walk_nodes.geojson.gz",
-      "bytes": 100225139,
       "compressed_bytes": 5066861,
       "feature_count": 212066,
       "catalog": {
         "type": "node",
-        "description": "전체 도보 네트워크 NODE. 원본 NODE WKT를 WGS84 GeoJSON으로 변환.",
-        "source": "route/서울시 자치구별 도보 네트워크 공간정보.csv"
+        "source": "route/서울시 자치구별 도보 네트워크 공간정보.csv",
+        "description": "전체 도보 네트워크 NODE. 원본 NODE WKT를 WGS84 GeoJSON으로 변환."
       }
     },
     {
       "name": "walk_network.geojson",
       "compressed_name": "walk_network.geojson.gz",
-      "bytes": 112881441,
       "compressed_bytes": 15572233,
       "feature_count": 279016,
       "catalog": {
         "type": "link",
-        "description": "전체 도보 네트워크 LINK.",
-        "source": "route/서울시 자치구별 도보 네트워크 공간정보.csv"
+        "source": "route/서울시 자치구별 도보 네트워크 공간정보.csv",
+        "description": "전체 도보 네트워크 LINK."
+      }
+    },
+    {
+      "name": "braille_network_nodes.geojson",
+      "compressed_name": "braille_network_nodes.geojson.gz",
+      "compressed_bytes": 1761517,
+      "feature_count": 101824,
+      "catalog": {
+        "type": "node",
+        "source": "sidewalk_representative_network_segments_v2.geojson에서 정규화",
+        "description": "점자 네트워크의 endpoint를 정규화한 독립 노드. `braille_node_id`, 좌표, degree 포함."
+      }
+    },
+    {
+      "name": "braille_network_links.geojson",
+      "compressed_name": "braille_network_links.geojson.gz",
+      "compressed_bytes": 12243959,
+      "feature_count": 52577,
+      "catalog": {
+        "type": "link",
+        "source": "sidewalk_representative_network_segments_v2.geojson에서 정규화",
+        "description": "점자 네트워크를 단독 사용 가능하도록 만든 링크. `braille_link_id`, `from_braille_node_id`, `to_braille_node_id`와 기존 속성 포함."
       }
     },
     {
       "name": "crosswalk_links_enriched.geojson",
       "compressed_name": "crosswalk_links_enriched.geojson.gz",
-      "bytes": 7673172,
       "compressed_bytes": 872639,
       "feature_count": 11562,
       "catalog": {
         "type": "link",
-        "description": "대로변 횡단보도 LINK. 자치구 횡단보도 점 속성을 최근접으로 참고 매칭.",
-        "source": "crosswalk_safety/서울시_대로변_횡단보도_위치정보.csv"
+        "source": "crosswalk_safety/서울시_대로변_횡단보도_위치정보.csv",
+        "description": "대로변 횡단보도 LINK. 자치구 횡단보도 점 속성을 최근접으로 참고 매칭."
       }
     },
     {
       "name": "walk_crosswalk_nodes.geojson",
       "compressed_name": "walk_crosswalk_nodes.geojson.gz",
-      "bytes": 5145858,
       "compressed_bytes": 447225,
       "feature_count": 19428,
       "catalog": {
         "type": "node",
-        "description": "전체 도보 네트워크 NODE 중 횡단보도=1인 노드.",
-        "source": "route/서울시 자치구별 도보 네트워크 공간정보.csv"
+        "source": "route/서울시 자치구별 도보 네트워크 공간정보.csv",
+        "description": "전체 도보 네트워크 NODE 중 횡단보도=1인 노드."
       }
     },
     {
       "name": "walk_crosswalk_lonely_nodes.geojson",
       "compressed_name": "walk_crosswalk_lonely_nodes.geojson.gz",
-      "bytes": 6866,
       "compressed_bytes": 1356,
       "feature_count": 19,
       "catalog": {
         "type": "node",
-        "description": "대로변 횡단보도 LINK에서 10m 초과 떨어진 횡단보도 노드 검수 레이어.",
-        "source": "walk_crosswalk_nodes.geojson + crosswalk_links_enriched.geojson"
+        "source": "walk_crosswalk_nodes.geojson + crosswalk_links_enriched.geojson",
+        "description": "대로변 횡단보도 LINK에서 10m 초과 떨어진 횡단보도 노드 검수 레이어."
       }
     },
     {
       "name": "audible_signal_points.geojson",
       "compressed_name": "audible_signal_points.geojson.gz",
-      "bytes": 3349467,
       "compressed_bytes": 525312,
       "feature_count": 12275,
       "catalog": {
         "type": "node",
-        "description": "음향신호기 위치점.",
-        "source": "crosswalk_safety/A073_P_음향신호기/A073_P.shp"
+        "source": "crosswalk_safety/A073_P_음향신호기/A073_P.shp",
+        "description": "음향신호기 위치점."
       }
     },
     {
       "name": "subway_elevators.geojson",
       "compressed_name": "subway_elevators.geojson.gz",
-      "bytes": 169881,
       "compressed_bytes": 18764,
       "feature_count": 552,
       "catalog": {
         "type": "node",
-        "description": "서울시 지하철역 엘리베이터 위치점.",
-        "source": "subway_access/서울시_지하철역_엘리베이터_위치정보.csv"
-      }
-    },
-    {
-      "name": "sidewalk_boxes.geojson",
-      "compressed_name": "sidewalk_boxes.geojson.gz",
-      "bytes": 33890571,
-      "compressed_bytes": 4694852,
-      "feature_count": 55515,
-      "catalog": {
-        "type": "polygon",
-        "description": "점자 bbox.",
-        "source": "route/SWM_SDWK_DT.csv + route/SWM_BRLL_DT.csv"
-      }
-    },
-    {
-      "name": "sidewalk_bbox_network_segments.geojson",
-      "compressed_name": "sidewalk_bbox_network_segments.geojson.gz",
-      "bytes": 140154220,
-      "compressed_bytes": 12030111,
-      "feature_count": 127133,
-      "catalog": {
-        "type": "link",
-        "description": "점자 bbox 내부와 교차하는 도보 네트워크 조각.",
-        "source": "파생 산출물"
-      }
-    },
-    {
-      "name": "sidewalk_representative_network_segments.geojson",
-      "compressed_name": "sidewalk_representative_network_segments.geojson.gz",
-      "bytes": 65761236,
-      "compressed_bytes": 6797228,
-      "feature_count": 52577,
-      "catalog": {
-        "type": "link",
-        "description": "점자 네트워크 1.",
-        "source": "파생 산출물"
-      }
-    },
-    {
-      "name": "sidewalk_representative_network_segments_v2.geojson",
-      "compressed_name": "sidewalk_representative_network_segments_v2.geojson.gz",
-      "bytes": 76335299,
-      "compressed_bytes": 11579384,
-      "feature_count": 52577,
-      "catalog": {
-        "type": "link",
-        "description": "점자 네트워크 2.",
-        "source": "파생 산출물"
-      }
-    },
-    {
-      "name": "walk_network_clean_candidates.geojson",
-      "compressed_name": "walk_network_clean_candidates.geojson.gz",
-      "bytes": 21929706,
-      "compressed_bytes": 3112990,
-      "feature_count": 21221,
-      "catalog": {
-        "type": "link",
-        "description": "bbox 내의 네트워크 1.",
-        "source": "파생 산출물"
-      }
-    },
-    {
-      "name": "walk_network_clean_candidates_v2.geojson",
-      "compressed_name": "walk_network_clean_candidates_v2.geojson.gz",
-      "bytes": 75184798,
-      "compressed_bytes": 9937186,
-      "feature_count": 86899,
-      "catalog": {
-        "type": "link",
-        "description": "bbox 내의 네트워크 2.",
-        "source": "파생 산출물"
+        "source": "subway_access/서울시_지하철역_엘리베이터_위치정보.csv",
+        "description": "서울시 지하철역 엘리베이터 위치점."
       }
     },
     {
       "name": "seoul_boundary.geojson",
       "compressed_name": "seoul_boundary.geojson.gz",
-      "bytes": 92412,
       "compressed_bytes": 29002,
       "feature_count": 1,
       "catalog": {
         "type": "polygon",
-        "description": "서울 경계 표시용 레이어.",
-        "source": "파생 산출물"
+        "source": "파생 산출물",
+        "description": "서울 경계 표시용 레이어."
       }
     },
     {
       "name": "roads.json",
       "compressed_name": "roads.json.gz",
-      "bytes": 5013,
       "compressed_bytes": 1772,
       "feature_count": null,
       "catalog": {
         "type": "lookup",
-        "description": "도로명 검색 옵션.",
-        "source": "파생 산출물"
+        "source": "파생 산출물",
+        "description": "도로명 검색 옵션."
       }
     }
   ]
